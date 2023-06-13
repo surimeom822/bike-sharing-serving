@@ -32,7 +32,7 @@ model = joblib.load(os.path.join(ARTIFACT_PATH, "model.pkl"))
 def load_data(filename: str) -> pd.DataFrame:
     return pd.read_csv(
         os.path.join(DATA_PATH, filename),
-        # usecols=lambda x: x not in ["area_locality", "posted_on", "id"], # 컬럼 전체 사용 - 주석처리
+        usecols=lambda x: x not in ["datetime"],  # 컬럼 전체 사용 - 주석처리
     )
 
 
@@ -66,7 +66,7 @@ def model_drift_detection(
     train_df: pd.DataFrame, new_df: pd.DataFrame, label: str, cat_features: str
 ) -> None:
     def get_xy(df: pd.DataFrame):
-        y = np.log1p(df[LABEL_NAME])
+        y = df[LABEL_NAME]
         x = preprocess_pipeline.fit_transform(
             X=df.drop([LABEL_NAME], axis=1), y=y
         )

@@ -4,29 +4,36 @@ from category_encoders import TargetEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import FunctionTransformer
 
-CAT_FEATURES = ["time", "season", "holiday", "workingday", "weather"]
+CAT_FEATURES = [
+    "season",
+    "holiday",
+    "workingday",
+    "weather",
+]  # ["time", "season", "holiday", "workingday", "weather"]
 
 
 def extract_time(time_info: str) -> str:
-    split_time_info = time_info.split("-")
-    time_str = split_time_info[1]
+    time_info = time_info.strftime("%Y-%m-%d %H:%M:%S")
+
+    split_time_info = time_info.split(" ")[1].split(":")
+    time_str = split_time_info[0]
     return time_str
 
 
-def time_extractor(df: pd.DataFrame, col: str, rst_col: str) -> pd.DataFrame:
-    df[rst_col] = df[col].apply(lambda x: extract_time(x))
+def time_extractor(df: pd.DataFrame, col: str) -> pd.DataFrame:
+    df["time"] = df[col].apply(lambda x: extract_time(x))
     return df
 
 
 preprocess_pipeline = ColumnTransformer(
     transformers=[
-        (
-            "time_extractor",
-            FunctionTransformer(
-                time_extractor, kw_args={"col": "datetime", "rst_col": "time"}
-            ),
-            ["datetime"],
-        ),
+        # (
+        #     "time_extractor",
+        #     FunctionTransformer(
+        #         time_extractor, kw_args={"col": "datetime"}
+        #     ),
+        #     ["datetime"],
+        # ),
         (
             "target_encoder",
             TargetEncoder(),

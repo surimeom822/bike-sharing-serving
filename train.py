@@ -30,7 +30,7 @@ if __name__ == "__main__":
     train_df = pd.read_csv(os.path.join(DATA_PATH, "bike_sharing_train.csv"))
     logger.debug("Load data...")
 
-    _X = train_df.drop(["datetime","count"], axis=1)
+    _X = train_df.drop(["datetime", "count"], axis=1)
     y = train_df["count"]
     X = preprocess_pipeline.fit_transform(X=_X, y=y)
 
