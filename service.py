@@ -8,14 +8,14 @@ from pydantic import BaseModel
 # X : datetime,season,holiday,workingday,weather,temp,atemp,humidity,windspeed
 class Features(BaseModel):
     time: str
-    season: str
-    holiday: str
-    workingday: str
-    weather: str
-    temp: int
-    atemp: int
+    season: int
+    holiday: int
+    workingday: int
+    weather: int
+    temp: float
+    atemp: float
     humidity: int
-    windspeed: int
+    windspeed: float
 
 
 # TODO: 학습 코드에서 저장한 베스트 모델을 가져올 것 (house_rent:latest)
