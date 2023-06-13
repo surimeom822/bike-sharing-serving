@@ -25,14 +25,14 @@ warnings.filterwarnings(action="ignore")
 
 
 DATE = datetime.now().strftime("%Y%m%d")
-LABEL_NAME = "rent"
+LABEL_NAME = "count"
 model = joblib.load(os.path.join(ARTIFACT_PATH, "model.pkl"))
 
 
 def load_data(filename: str) -> pd.DataFrame:
     return pd.read_csv(
         os.path.join(DATA_PATH, filename),
-        usecols=lambda x: x not in ["area_locality", "posted_on", "id"],
+        # usecols=lambda x: x not in ["area_locality", "posted_on", "id"], # 컬럼 전체 사용 - 주석처리
     )
 
 
@@ -47,12 +47,12 @@ def log_failed_check_info(suite_result: SuiteResult):
 def data_drift_detection(
     train_df: pd.DataFrame, new_df: pd.DataFrame, label: str, cat_features: str
 ) -> None:
-    # TODO: Dataset 클래스를 이용해 train_set과 new_set을 만들 것
+    # Dataset 클래스를 이용해 train_set과 new_set을 만들 것
     train_set = Dataset(train_df, label=label, cat_features=cat_features)
     new_set = Dataset(new_df, label=label, cat_features=cat_features)
 
     validation_suite = train_test_validation()
-    # TODO: Data Drift 결과를 얻기 위해 suite 실행
+    # Data Drift 결과를 얻기 위해 suite 실행
     suite_result = validation_suite.run(train_set, new_set)
 
     log_failed_check_info(suite_result=suite_result)
@@ -89,7 +89,7 @@ def model_drift_detection(
 
     evaluation_suite = model_evaluation()
 
-    # TODO: Model Drift 결과를 얻기 위해 suite 실행
+    # Model Drift 결과를 얻기 위해 suite 실행
     suite_result = evaluation_suite.run(train_set, new_set, model["regr"])
 
     log_failed_check_info(suite_result=suite_result)
@@ -100,15 +100,15 @@ def model_drift_detection(
 
 
 def main():
-    train_df = load_data(filename="house_rent_train.csv")
-    new_df = load_data(filename="house_rent_new.csv")
+    train_df = load_data(filename="bike_sharing_train.csv")
+    new_df = load_data(filename="bike_sharing_new.csv")
 
     logger.debug(f"{train_df.info()}")
     logger.debug(f"{new_df.info()}")
 
     logger.info("Detect data drift")
     data_drift_detection(
-        # TODO: Data drift detection 함수 인자 추가
+        # Data drift detection 함수 인자 추가
         train_df=train_df,
         new_df=new_df,
         label=LABEL_NAME,
@@ -117,7 +117,7 @@ def main():
 
     logger.info("Detect model drift")
     model_drift_detection(
-        # TODO: Model drift detection 함수 인자 추가
+        # Model drift detection 함수 인자 추가
         train_df=train_df,
         new_df=new_df,
         label=LABEL_NAME,

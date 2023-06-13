@@ -21,22 +21,22 @@ warnings.filterwarnings(action="ignore")
 
 if __name__ == "__main__":
     DATE = datetime.now().strftime("%Y%m%d")
-    test = pd.read_csv(os.path.join(DATA_PATH, "house_rent_test.csv"))
+    test = pd.read_csv(os.path.join(DATA_PATH, "bike_sharing_test.csv"))
     model = joblib.load(os.path.join(ARTIFACT_PATH, "model.pkl"))
 
-    X = test.drop(["id", "rent"], axis=1, inplace=False)
-    id_ = test["id"].to_numpy()
+    X = test.drop(["count"], axis=1, inplace=False)
+    id_ = test["datetime"].to_numpy()
 
     model["preprocessor"].transform(X=X).to_csv(
-        os.path.join(DATA_PATH, "storage", "house_rent_test_features.csv"),
+        os.path.join(DATA_PATH, "storage", "bike_sharing_test_features.csv"),
         index=False,
     )
 
-    pred_df = pd.DataFrame({"user": id_, "rent": np.expm1(model.predict(X))})
+    pred_df = pd.DataFrame({"datetime": id_, "count": model.predict(X)})
 
     logger.info(f"Batch prediction for {len(pred_df)} users is created.")
 
-    save_path = os.path.join(PREDICTION_PATH, f"{DATE}_rent_prediction.csv")
+    save_path = os.path.join(PREDICTION_PATH, f"{DATE}_bike_sharing_prediction.csv")
     pred_df.to_csv(save_path, index=False)
 
     logger.info(f"Prediction can be found in following path: \n{save_path}")
