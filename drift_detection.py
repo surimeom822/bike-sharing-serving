@@ -32,7 +32,7 @@ model = joblib.load(os.path.join(ARTIFACT_PATH, "model.pkl"))
 def load_data(filename: str) -> pd.DataFrame:
     return pd.read_csv(
         os.path.join(DATA_PATH, filename),
-        usecols=lambda x: x not in ["datetime"],  # 컬럼 전체 사용 - 주석처리
+        usecols=lambda x: x not in ["datetime"],
     )
 
 

@@ -5,9 +5,9 @@ import pandas as pd
 from bentoml.io import JSON, NumpyNdarray
 from pydantic import BaseModel
 
+
 # X : datetime,season,holiday,workingday,weather,temp,atemp,humidity,windspeed
 class Features(BaseModel):
-    time: str
     season: int
     holiday: int
     workingday: int
@@ -18,7 +18,7 @@ class Features(BaseModel):
     windspeed: float
 
 
-# TODO: 학습 코드에서 저장한 베스트 모델을 가져올 것 (house_rent:latest)
+# 학습 코드에서 저장한 베스트 모델을 가져올 것
 bento_model = bentoml.sklearn.get("bike_sharing:latest")
 model_runner = bento_model.to_runner()
 svc = bentoml.Service("bike_sharing_regressor", runners=[model_runner])
@@ -28,5 +28,5 @@ svc = bentoml.Service("bike_sharing_regressor", runners=[model_runner])
 @svc.api(input=JSON(pydantic_model=Features), output=NumpyNdarray())
 async def predict(input_data: Features) -> npt.NDArray:
     input_df = pd.DataFrame([input_data.dict()])
-    log_pred = await model_runner.predict.async_run(input_df)
-    return np.expm1(log_pred)
+    pred = await model_runner.predict.async_run(input_df)
+    return pred

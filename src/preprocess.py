@@ -9,31 +9,10 @@ CAT_FEATURES = [
     "holiday",
     "workingday",
     "weather",
-]  # ["time", "season", "holiday", "workingday", "weather"]
-
-
-def extract_time(time_info: str) -> str:
-    time_info = time_info.strftime("%Y-%m-%d %H:%M:%S")
-
-    split_time_info = time_info.split(" ")[1].split(":")
-    time_str = split_time_info[0]
-    return time_str
-
-
-def time_extractor(df: pd.DataFrame, col: str) -> pd.DataFrame:
-    df["time"] = df[col].apply(lambda x: extract_time(x))
-    return df
-
+]
 
 preprocess_pipeline = ColumnTransformer(
     transformers=[
-        # (
-        #     "time_extractor",
-        #     FunctionTransformer(
-        #         time_extractor, kw_args={"col": "datetime"}
-        #     ),
-        #     ["datetime"],
-        # ),
         (
             "target_encoder",
             TargetEncoder(),
